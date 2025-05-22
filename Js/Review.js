@@ -2933,6 +2933,7 @@ function initMusicPlayer() {
     addTrackToPlaylist('Music/BabyDontCry.mp3', '人鱼的眼泪 - EXO');
     addTrackToPlaylist('Music/Always Online.mp3', 'Always Online - 林俊杰');
     addTrackToPlaylist('Music/我还想她(I Still Miss Her).mp3', '我还想她 - 林俊杰');
+    addTrackToPlaylist('Music/麻醉师1.mp3', '麻醉师 - 胡睿');
 }
 
 function addTrackToPlaylist(audioUrl, title) {
