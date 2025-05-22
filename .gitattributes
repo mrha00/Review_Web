@@ -1,0 +1,2 @@
+Music/**/*.mp3 filter=lfs diff=lfs merge=lfs -text
+Music/** filter=lfs diff=lfs merge=lfs -text

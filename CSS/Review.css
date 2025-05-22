@@ -1,0 +1,1324 @@
+        :root {
+            --primary-color: #f0f4f8;
+            --correct-color: #50c878;
+            --incorrect-color: #ff6b6b;
+            --primary-blue: #5A8BFF;
+            --background-color: white;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --question-bg: #f8f9fa;
+            --text-color-muted: #666;
+            /* 新增：用于次要文本或提示信息 */
+            /* 安全区域适配 */
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* 动态视口高度修正 */
+        @supports (-webkit-touch-callout: none) {
+            :root {
+                --ios-vh: calc(var(--vh, 1vh) * 100);
+                height: -webkit-fill-available;
+            }
+
+            body {
+                min-height: var(--ios-vh);
+                min-height: -webkit-fill-available;
+            }
+        }
+
+        :root.dark-mode {
+            --primary-color: #1a1a1a;
+            --background-color: #1E1E1E;
+            /* 修改背景色 */
+            --text-color: #f0f0f0;
+            --border-color: #444;
+            --question-bg: #3a3a3a;
+            --correct-color: #4caf50;
+            --incorrect-color: #f44336;
+            --text-color-muted: #aaa;
+            /* 新增：暗色模式下的次要文本颜色 */
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            /* 更新字体组合 */
+            margin: 0;
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            /* 安全区域适配 */
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            /* 修正Safari字体渲染 */
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            /* 默认浅色模式：高不透明度白色 */
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.07);
+            /* 浅色模式下的细微深色边框 */
+            position: relative;
+            /* 确保内部绝对定位的元素是相对于它的 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            /* 浅色模式下的细微阴影 */
+        }
+
+        :root.dark-mode .container {
+            background-color: rgba(40, 40, 40, 0.95);
+            /* 深色模式：高不透明度深灰色 */
+            border-color: rgba(255, 255, 255, 0.1);
+            /* 深色模式下的细微亮色边框 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            /* 深色模式下更明显的阴影 */
+        }
+
+        .paper-table {
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .divTable {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .cell:hover {
+            background: #f8f9fa;
+        }
+
+        .cell[data-selected="true"] {
+            background: rgba(74, 144, 226, 0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .metadata {
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+
+        .paper-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .metadata span {
+            display: block;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .status {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .score-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2d3436;
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--question-bg);
+            border-radius: 8px;
+            position: relative;
+            transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+            /* 调整动画时长和曲线 */
+        }
+
+        .question::after {
+            content: attr(data-type);
+            /* 严格使用data-type属性的内容 */
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: var(--text-color-muted);
+            /* 使用定义的次要文本颜色 */
+            font-size: 0.9em;
+            font-weight: normal;
+            /* 确保字体权重是正常的，不被其他状态影响 */
+            /* 可以添加其他重置样式以确保其外观的稳定性 */
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            background: var(--background-color);
+            box-shadow: 5px 5px 10px #d1d1d1,
+                -5px -5px 10px #ffffff;
+            position: relative;
+            /* 新增：确保内部绝对定位的元素相对此元素定位 */
+        }
+
+        :root.dark-mode .option {
+            box-shadow: 5px 5px 10px #161616,
+                -5px -5px 10px #2c2c2c;
+        }
+
+        .option:hover {
+            box-shadow: inset 5px 5px 10px #d1d1d1,
+                inset -5px -5px 10px #ffffff;
+        }
+
+        :root.dark-mode .option:hover {
+            box-shadow: inset 5px 5px 10px #161616,
+                inset -5px -5px 10px #2c2c2c;
+        }
+
+        .option.selected {
+            box-shadow: inset 5px 5px 10px #d1d1d1,
+                inset -5px -5px 10px #ffffff;
+            background-color: var(--primary-color);
+        }
+
+        :root.dark-mode .option.selected {
+            box-shadow: inset 5px 5px 10px #161616,
+                inset -5px -5px 10px #2c2c2c;
+            background-color: var(--question-bg);
+        }
+
+        .option.correct {
+            background: linear-gradient(145deg, #e6ffe6, #cce6cc);
+            color: #006400;
+            box-shadow: 3px 3px 6px #b3c2b3,
+                -3px -3px 6px #ffffff;
+        }
+
+        :root.dark-mode .option.correct {
+            background: linear-gradient(145deg, #2a4a2a, #1c331c);
+            color: #a0d0a0;
+            box-shadow: 3px 3px 6px #111f11,
+                -3px -3px 6px #395939;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(145deg, #ffe6e6, #e6cccc);
+            color: #a00000;
+            box-shadow: 3px 3px 6px #c2b3b3,
+                -3px -3px 6px #ffffff;
+        }
+
+        :root.dark-mode .option.incorrect {
+            background: linear-gradient(145deg, #4a2a2a, #331c1c);
+            color: #d0a0a0;
+            box-shadow: 3px 3px 6px #1f1111,
+                -3px -3px 6px #593939;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #6C8BFF 0%, #4A90E2 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        #submit {
+            color: white;
+        }
+
+        #reset {
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+        }
+
+        @keyframes animatetop {
+            from {
+                top: -300px;
+                opacity: 0
+            }
+
+            to {
+                top: 0;
+                opacity: 1
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            padding: 2px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-body {
+            padding: 20px 16px;
+        }
+
+        .modal-footer {
+            padding: 15px;
+            text-align: right;
+            border-top: 1px solid #eee;
+        }
+
+        .result-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .result-details {
+            margin-top: 15px;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+        }
+
+        .correct-answer {
+            color: var(--correct-color);
+        }
+
+        .wrong-answer {
+            color: var(--incorrect-color);
+        }
+
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 20px 0;
+            padding: 15px;
+            background: var(--question-bg);
+            border-radius: 8px;
+        }
+
+        .question-nav-item {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .question-nav-item:hover {
+            background: #e9ecef;
+            position: relative;
+            /* 为 tooltip 定位 */
+        }
+
+        .question-nav-item .tooltip {
+            visibility: hidden;
+            width: max-content;
+            /* 根据内容自适应宽度 */
+            max-width: 150px;
+            /* 防止过宽 */
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 8px;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            /* 在导航项上方显示 */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8em;
+            /* tooltip 内字体大小 */
+            white-space: normal;
+            /* 允许换行 */
+        }
+
+        .question-nav-item .tooltip::after {
+            /* 小箭头 */
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .question-nav-item:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .question-nav-item.answered {
+            background: rgba(74, 144, 226, 0.2);
+            border-color: var(--primary-blue);
+        }
+
+        .question-nav-item.current {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: bold;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e9ecef;
+            /* 进度条容器背景色 */
+            border-radius: 4px;
+            margin: 15px 0;
+            height: 10px;
+            /* 稍微增加高度以便观察光效 */
+            overflow: hidden;
+            /* 必须，隐藏溢出的光效 */
+            position: relative;
+            /* 伪元素定位的参考 */
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-blue);
+            /* 进度条主色 */
+            transition: width 0.3s ease;
+            border-radius: 4px;
+            /* 保持圆角一致性 */
+            position: relative;
+            /* 确保伪元素在进度条内部 */
+            overflow: hidden;
+            /* 隐藏超出自身宽度的光效 */
+        }
+
+        /* 流动光效 */
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(100deg,
+                    rgba(255, 255, 255, 0) 20%,
+                    /* transparent at 20% */
+                    rgba(255, 255, 255, 0.4) 50%,
+                    /* highlight */
+                    rgba(255, 255, 255, 0) 80%
+                    /* transparent at 80% */
+                );
+            background-size: 200% 100%;
+            animation: progress-flow 1.5s linear infinite;
+        }
+
+        :root.dark-mode .progress-bar::after {
+            background: linear-gradient(100deg,
+                    rgba(255, 255, 255, 0) 20%,
+                    rgba(255, 255, 255, 0.15) 50%,
+                    /* Dark mode highlight, more subtle */
+                    rgba(255, 255, 255, 0) 80%);
+            background-size: 200% 100%;
+            /* Crucial for the animation */
+        }
+
+        @keyframes progress-flow {
+            0% {
+                background-position: 200% 0;
+                /* Start from the right */
+            }
+
+            100% {
+                background-position: -200% 0;
+                /* Move to the left */
+            }
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: transform 0.3s;
+            border: none;
+            font-size: 20px;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .question {
+                padding: 15px;
+            }
+
+            .option {
+                padding: 20px;
+                /* 将 padding 从 10px 增加到 20px */
+                margin-bottom: 8px;
+            }
+
+            button {
+                padding: 10px 20px;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .quiz-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .question-nav-item {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8em;
+            }
+
+            .controls {
+                position: sticky;
+                bottom: 0;
+                background: var(--background-color);
+                /* 添加背景色以防内容透视 */
+                padding: 15px 0;
+                /* 增加一些上下padding */
+                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+                /* 顶部轻微阴影，增加层次感 */
+                z-index: 100;
+                /* 确保在其他内容之上 */
+                /* 如果按钮已经是 width: 100%，则不需要额外调整布局 */
+            }
+
+            /* 移动端试卷卡片单列流式布局 */
+            .paper-table .divTable,
+            .paper-table .row,
+            .paper-table .cell {
+                display: block;
+                /* 改为块级元素，自然垂直排列 */
+                width: 100%;
+                /* 占据全部宽度 */
+                box-sizing: border-box;
+                /* 包含padding和border在width内 */
+            }
+
+            .paper-table .cell {
+                margin-bottom: 15px;
+                /* 卡片间增加垂直间距 */
+                min-width: 0;
+                /* 取消最小宽度限制 */
+                border-left: 1px solid var(--border-color);
+                /* 保持边框样式统一 */
+                border-right: 1px solid var(--border-color);
+            }
+
+            .paper-table .row.header {
+                display: none;
+                /* 在单列视图中可以考虑隐藏表头行 */
+            }
+        }
+
+        h2,
+        h3 {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        button i {
+            margin-right: 5px;
+        }
+
+        button.icon-only i {
+            margin-right: 0;
+        }
+
+        #reset i.fa-arrows-rotate:hover {
+            animation: fa-spin 1s infinite linear;
+        }
+
+        /* 音乐控制按钮 */
+        .music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 110px;
+            /* 在设置按钮左侧 */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 101;
+            border: none;
+            transition: transform 0.3s;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        /* 音乐面板 */
+        .music-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 280px;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            z-index: 100;
+            display: none;
+        }
+
+        .music-panel.active {
+            display: block;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        #playlist {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        #playlist li {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        #playlist li:hover {
+            background: var(--question-bg);
+        }
+
+        #playlist li.current {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .music-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            background: var(--primary-blue);
+            color: white;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .music-btn:hover {
+            opacity: 0.9;
+        }
+
+        #audioPlayer {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .question-wrapper {
+            position: relative;
+            overflow: hidden;
+            /* 改为 visible 可能更好，或者根据淡入淡出来调整 */
+            /* Safari弹性滚动优化 */
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .question {
+            /* position: absolute; */
+            /* 在JS中动态控制 */
+            width: 100%;
+            /* top: 0; */
+            /* 在JS中动态控制 */
+            /* left: 0; */
+            /* 在JS中动态控制 */
+            opacity: 0;
+            /* 默认不可见 */
+            transition: opacity 0.18s ease-out;
+            /* 仅过渡透明度 */
+            display: none;
+            /* 通过JS切换display: block/none */
+        }
+
+        .question.active {
+            /* transform: translateX(0); */
+            /* 移除transform */
+            opacity: 1;
+            z-index: 1;
+            position: relative;
+            /* active的题目设为relative，撑开父容器 */
+            display: block;
+        }
+
+        /* 移除所有 slide-相关的类，因为不再需要滑动动画 */
+        /*
+        .question.slide-out-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 0;
+        }
+
+        .question.slide-in-from-right {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 0;
+        }
+
+        .question.slide-out-right {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 0;
+        }
+
+        .question.slide-in-from-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 0;
+        }
+        */
+
+        /* 即时判题角标样式 */
+        .option .feedback-icon {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 1.2em;
+            /* 图标大小 */
+            font-weight: bold;
+        }
+
+        .option .feedback-icon.correct {
+            color: var(--correct-color);
+            /* 使用已定义的正确颜色 */
+        }
+
+        .option .feedback-icon.incorrect {
+            color: var(--incorrect-color);
+            /* 使用已定义的错误颜色 */
+        }
+
+        /* Neumorphic 选中状态，可以做得更像按下的效果 */
+        /* 题目待复查标记样式 */
+        .question.marked-for-review {
+            border-left: 5px solid orange;
+            /* 左侧橙色边框表示待复查 */
+        }
+
+        .question .review-indicator {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 1.5em;
+            color: orange;
+            cursor: pointer;
+            /* 允许点击取消 */
+        }
+
+        .question-nav-item.marked-for-review-nav {
+            /* background-color: #fff3e0; */
+            /* 淡橙色背景 */
+            border-color: orange !important;
+            /* 橙色边框 */
+        }
+
+        .question-nav-item.marked-for-review-nav::before {
+            /* 用伪元素添加标记 */
+            content: "⭐";
+            /* 或者 FontAwesome 图标 */
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            font-size: 0.8em;
+            color: orange;
+        }
+
+        .question h3.zoomed {
+            transform: scale(1.2);
+            transform-origin: top left;
+            /* 或者 center left */
+            transition: transform 0.2s ease-out;
+        }
+
+        /* 新增背景主题选择器样式 */
+        .background-theme-selector {
+            position: fixed;
+            top: 70px;
+            /* 深色模式切换按钮下方 */
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            /* 按钮间距 */
+            z-index: 100;
+        }
+
+        .background-theme-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .background-theme-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* 各主题按钮的预览背景 */
+        #theme-btn-default {
+            background-image: linear-gradient(45deg, #f0f4f8 50%, #1a1a1a 50%);
+            /* 左亮右暗代表默认 */
+        }
+
+        #theme-btn-vibrant {
+            background-image: linear-gradient(135deg, #6DD5FA 0%, #FF758C 100%);
+        }
+
+        #theme-btn-night {
+            background-color: #0f172a;
+        }
+
+        #theme-btn-green {
+            background-color: #e0ffe0;
+        }
+
+        /* 应用到 body 的主题类 */
+        body.theme-vibrant-gradient {
+            background: linear-gradient(135deg, #6DD5FA 0%, #FF758C 100%) !important;
+            /* 使用 !important 确保覆盖 body 的默认背景 */
+            background-attachment: fixed;
+        }
+
+        body.theme-calm-night {
+            background-color: #0f172a !important;
+            background-attachment: fixed;
+        }
+
+        body.theme-eye-care-green {
+            background-color: #e0ffe0 !important;
+            background-attachment: fixed;
+        }
+
+        /* 新增自定义背景控制区域样式 */
+        .custom-background-controls {
+            margin-top: 15px;
+            /* 与上方按钮组的间距 */
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            /* 轻微背景以便区分 */
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .custom-background-controls label {
+            font-size: 0.9em;
+            color: var(--text-color);
+            /* 根据深浅模式变化 */
+        }
+
+        .custom-background-controls input[type=\"color\"],
+        .custom-background-controls select,
+        .custom-background-controls button {
+            width: 100%;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .custom-background-controls input[type=\"color\"] {
+            height: 35px;
+            /* 增加颜色选择器高度 */
+        }
+
+        .custom-background-controls .gradient-options label {
+            margin-right: 10px;
+        }
+
+        /* 新增背景主题选择器样式 */
+        .settings-button {
+            position: fixed;
+            top: 20px;
+            /* 与深色模式按钮同高，但在其左侧或按需调整 */
+            right: 70px;
+            /* 放在深色模式按钮左边 */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 101;
+            /* 比深色模式按钮高一级，确保在最上层 */
+            font-size: 20px;
+        }
+
+        .settings-button:hover {
+            transform: scale(1.05) rotate(15deg);
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 70px;
+            /* 设置按钮下方 */
+            right: 20px;
+            width: 250px;
+            /* 面板宽度 */
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            padding: 15px;
+            z-index: 100;
+            display: none;
+            /* 默认隐藏 */
+            flex-direction: column;
+            /* 内部元素垂直排列 */
+            gap: 15px;
+            /* 内部元素间距 */
+        }
+
+        .settings-panel.active {
+            display: flex;
+            /* 激活时显示 */
+        }
+
+        /* 原 .background-theme-selector 内的控件现在直接是 .settings-panel 的子元素或其内部div的子元素 */
+        /* 因此，可能需要调整其 position 和 top/right (如果之前是fixed) */
+        .background-theme-buttons-container {
+            /* 用于包裹预设主题按钮 */
+            display: flex;
+            flex-wrap: wrap;
+            /* 允许换行 */
+            justify-content: flex-start;
+            /* 从左开始排列 */
+            gap: 10px;
+            /* 按钮之间的间隙，可以根据需要调整 */
+            padding: 5px;
+            /* 可选：容器内边距 */
+        }
+
+        .background-theme-button {
+            /* 样式不变，但不再是 fixed 定位 */
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        @media (max-width: 600px) {
+
+            /* 调整设置面板在小屏幕上的位置和大小 */
+            .settings-panel {
+                width: calc(100% - 40px);
+                /* 减去左右边距 */
+                top: 60px;
+                /* 调整与顶部的距离 */
+                right: 20px;
+                max-height: 70vh;
+                /* 限制最大高度，允许滚动 */
+                overflow-y: auto;
+            }
+
+            .settings-button {
+                top: 10px;
+                right: 60px;
+                /* 避免与深色模式按钮重叠 */
+            }
+        }
+
+        #theme-btn-green {
+            background: linear-gradient(135deg, #D4EFDF, #A9DFBF);
+        }
+
+        /* 护眼绿 */
+
+        /* 新增主题按钮的预览样式 */
+        #theme-btn-ocean {
+            background: linear-gradient(135deg, #A3D8F4, #76B5C5);
+        }
+
+        /* 海洋之息 */
+        #theme-btn-sunset {
+            background: linear-gradient(135deg, #FFCC80, #FFA726);
+        }
+
+        /* 落日余晖 */
+        #theme-btn-forest {
+            background: linear-gradient(135deg, #A1C181, #6A994E);
+        }
+
+        /* 森林秘境 */
+        #theme-btn-starry {
+            background: linear-gradient(135deg, #4A4E69, #2C3E50);
+        }
+
+        /* 星空璀璨 */
+        #theme-btn-macaron {
+            background: linear-gradient(135deg, #FADADD, #D6B9D8);
+        }
+
+        /* 甜梦马卡龙 */
+        #theme-btn-mono {
+            background: linear-gradient(135deg, #E0E0E0, #BDBDBD);
+        }
+
+        /* 简约灰白 */
+
+        /* 确保原有的和新增的应用于 body 的主题类都在这里，并且没有被错误地嵌套或注释 */
+        /* 原有的主题类 */
+        body.theme-vibrant-gradient {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-calm-night {
+            background: linear-gradient(135deg, #2c3e50, #3498db) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-eye-care-green {
+            background: linear-gradient(135deg, #e6f9f0, #b3e6cc) !important;
+            background-attachment: fixed !important;
+        }
+
+        /* 新增的六个主题的 body 背景样式 */
+        body.theme-ocean-breath {
+            background: linear-gradient(135deg, #89f7fe, #66a6ff) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-sunset-glow {
+            background: linear-gradient(135deg, #f6d365, #fda085) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-forest-realm {
+            background: linear-gradient(135deg, #96e6a1, #d4fc79) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-starry-night {
+            background: linear-gradient(135deg, #2a2a72, #009ffd) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-sweet-macaron {
+            background: linear-gradient(135deg, #fddb92, #d1fdff) !important;
+            background-attachment: fixed !important;
+        }
+
+        body.theme-simple-mono {
+            background: linear-gradient(135deg, #e9e9e9, #c9c9c9) !important;
+            background-attachment: fixed !important;
+        }
+
+        @media (max-width: 600px) {
+
+            /* 调整设置面板在小屏幕上的位置和大小 */
+            .settings-panel {
+                width: calc(100% - 40px);
+                /* 减去左右边距 */
+                top: 60px;
+                /* 调整与顶部的距离 */
+                right: 20px;
+                max-height: 70vh;
+                /* 限制最大高度，允许滚动 */
+                overflow-y: auto;
+            }
+
+            .settings-button {
+                top: 10px;
+                right: 60px;
+                /* 避免与深色模式按钮重叠 */
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            /* 优化容器间距 */
+            .container {
+                padding: 10px;
+                margin: 10px;
+                /* 新增 margin 以避免紧贴边缘 */
+                border-radius: 8px;
+                /* 统一圆角 */
+            }
+
+            /* 调整题目字号和行高 */
+            .question h3 {
+                font-size: 1.1rem;
+                line-height: 1.4;
+            }
+
+            /* 增大选项点击区域 */
+            .option {
+                padding: 18px;
+                /* 将 padding 从 10px 增加到 18px */
+                margin-bottom: 12px;
+                /* 调整选项间距 */
+                min-height: 60px;
+                /* 保证最小高度，方便点击 */
+            }
+
+            /* 优化导航按钮尺寸 */
+            .question-nav-item {
+                width: 40px;
+                /* 增大尺寸 */
+                height: 40px;
+                /* 增大尺寸 */
+                font-size: 0.9rem;
+                /* 适当调整字体 */
+            }
+
+            /* 提升滑动检测灵敏度 - 实际上这是JS控制的，但可以为question元素添加touch-action */
+            .question {
+                touch-action: pan-y;
+                /* 允许垂直滚动，避免干扰水平滑动切题 */
+            }
+
+            .controls {
+                position: sticky;
+                bottom: 0;
+                background: var(--background-color);
+                padding: 10px 5px;
+                /* 调整内边距以适应并排按钮 */
+                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+                z-index: 100;
+                display: flex;
+                /* 确保是 flex 布局 */
+                flex-wrap: nowrap;
+                /* 防止按钮换行 */
+                gap: 8px;
+                /* 按钮之间的间隙 */
+                align-items: center;
+                /* 垂直居中按钮（如果高度不一致） */
+            }
+
+            .controls button {
+                width: auto;
+                /* 覆盖通用的 width: 100% */
+                flex-grow: 1;
+                /* 让按钮平均分配空间 */
+                flex-basis: 0;
+                /* 与 flex-grow: 1 配合实现平均分配 */
+                margin-bottom: 0;
+                /* 移除底部外边距 */
+                padding: 10px 5px;
+                /* 调整按钮内边距，使其更紧凑 */
+                font-size: 0.85em;
+                /* 适当缩小字体以适应小空间 */
+                white-space: nowrap;
+                /* 防止文字换行 */
+                overflow: hidden;
+                /* 隐藏溢出文字 */
+                text-overflow: ellipsis;
+                /* 用省略号显示溢出文字 */
+                line-height: 1.2;
+                /* 调整行高，以防文字垂直空间不足 */
+            }
+
+            /* 移动端试卷卡片单列流式布局 */
+            .paper-table .divTable,
+            .paper-table .row,
+            .paper-table .cell {
+                display: block;
+                /* 改为块级元素，自然垂直排列 */
+                width: 100%;
+                /* 占据全部宽度 */
+                box-sizing: border-box;
+                /* 包含padding和border在width内 */
+            }
+
+            .paper-table .cell {
+                margin-bottom: 15px;
+                /* 卡片间增加垂直间距 */
+                min-width: 0;
+                /* 取消最小宽度限制 */
+                border-left: 1px solid var(--border-color);
+                /* 保持边框样式统一 */
+                border-right: 1px solid var(--border-color);
+            }
+
+            .paper-table .row.header {
+                display: none;
+                /* 在单列视图中可以考虑隐藏表头行 */
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            /* 调整设置面板在小屏幕上的位置和大小 */
+            .settings-panel {
+                width: calc(100% - 40px);
+                /* 减去左右边距 */
+                top: 60px;
+                /* 调整与顶部的距离 */
+                right: 20px;
+                max-height: 70vh;
+                /* 限制最大高度，允许滚动 */
+                overflow-y: auto;
+            }
+
+            .settings-button {
+                top: 10px;
+                right: 60px;
+                /* 避免与深色模式按钮重叠 */
+            }
+        }
+
+        /* <!-- 禁用iOS点击高光 - 将其移动到通用按钮或输入元素部分可能更合适，或者全局应用  --> */
+        input,
+        textarea,
+        button {
+            webkit-tap-highlight-color: transparent;
+            tap-highlight-color: transparent;
+        }
