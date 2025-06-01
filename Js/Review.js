@@ -2925,15 +2925,14 @@ let tracks = [];
 
 // 初始化示例音乐
 function initMusicPlayer() {
-    addTrackToPlaylist('Music/麻醉师.mp3', '麻醉师 - 胡睿');
-    addTrackToPlaylist('Music/跳楼机.mp3', '跳楼机 - LBL');
-    addTrackToPlaylist('Music/愿与愁.mp3', '愿与愁 - 林俊杰');
-    addTrackToPlaylist('Music/特别的人(Special Person).mp3', '特别的人 - 方大同');
-    addTrackToPlaylist('Music/不说 (原来是不说).mp3', '不说 - 周公');
-    addTrackToPlaylist('Music/BabyDontCry.mp3', '人鱼的眼泪 - EXO');
-    addTrackToPlaylist('Music/Always Online.mp3', 'Always Online - 林俊杰');
-    addTrackToPlaylist('Music/我还想她(I Still Miss Her).mp3', '我还想她 - 林俊杰');
-    addTrackToPlaylist('Music/麻醉师1.mp3', '麻醉师 - 胡睿');
+    addTrackToPlaylist('../Music/麻醉师.mp3', '麻醉师 - 胡睿');
+    addTrackToPlaylist('../Music/跳楼机.mp3', '跳楼机 - LBL');
+    addTrackToPlaylist('../Music/愿与愁.mp3', '愿与愁 - 林俊杰');
+    addTrackToPlaylist('../Music/特别的人(Special Person).mp3', '特别的人 - 方大同');
+    addTrackToPlaylist('../Music/不说 (原来是不说).mp3', '不说 - 周公');
+    addTrackToPlaylist('../Music/BabyDontCry.mp3', '人鱼的眼泪 - EXO');
+    addTrackToPlaylist('../Music/Always Online.mp3', 'Always Online - 林俊杰');
+    addTrackToPlaylist('../Music/我还想她(I Still Miss Her).mp3', '我还想她 - 林俊杰');
 }
 
 function addTrackToPlaylist(audioUrl, title) {
